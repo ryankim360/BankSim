@@ -13,8 +13,11 @@ public class Bank {
     private long ntransacts = 0;
     private final int initialBalance;
     private final int numAccounts;
+    private boolean open;
+
 
     public Bank(int numAccounts, int initialBalance) {
+        open = true;
         this.initialBalance = initialBalance;
         this.numAccounts = numAccounts;
         accounts = new Account[numAccounts];
@@ -58,6 +61,17 @@ public class Bank {
     
     public boolean shouldTest() {
         return ++ntransacts % NTEST == 0;
+    }
+    
+    public void close() {
+        synchronized (this) {
+            open = false;
+        }
+        for (Account account : accounts) {
+            synchronized(account) {
+                account.notifyAll();
+            }
+        }
     }
 
 }

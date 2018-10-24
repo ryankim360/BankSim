@@ -42,5 +42,6 @@ class TransferThread extends Thread {
                 
             }
         }
+        bank.close();
     }
 }
